@@ -5,10 +5,12 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 # --- CONFIGURAÇÕES ---
+now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 DATA_FOLDER = "./processed_data"
-MODEL_NAME = "libras_model.h5"
+MODEL_NAME = "./models_saved/libras_model_" + now + ".h5"
 LOG_DIR = os.path.join('Logs')
 
 # 1. Carregar Dados

@@ -87,6 +87,8 @@ def process_dataset():
 
         for video_name in video_files:
             # Inicializa os DOIS detectores
+            print("INICIO - ", video_name)
+            
             with PoseLandmarker.create_from_options(pose_options) as pose_landmarker, \
                  HandLandmarker.create_from_options(hand_options) as hand_landmarker:
                 video_path = os.path.join(folder_path, video_name)
@@ -99,21 +101,16 @@ def process_dataset():
                     if not ret:
                         break
 
-                    
                     # Conversão para mp.Image (Exigido pela nova API)
                     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
                     
                     # Timestamp em ms (Necessário para modo VIDEO)
                     # Usamos a propriedade do vídeo para ser mais preciso que time.time()
-                    timestamp_ms = int(cap.get(cv2.CAP_PROP_POS_MSEC))
-                    
-                    print("AAAAAAAAAAAAAAAAAAAAAAAA", video_name, timestamp_ms)
+                    timestamp_ms = int(cap.get(cv2.CAP_PROP_POS_MSEC))                    
 
                     # Executa as detecções
                     pose_results = pose_landmarker.detect_for_video(mp_image, timestamp_ms)
                     hand_results = hand_landmarker.detect_for_video(mp_image, timestamp_ms)
-                    
-                    print("BBBBBBBBBBBBBBBBBBBBBBB", video_name, timestamp_ms)
                     
                     # Extração combinada
                     keypoints = extract_keypoints(pose_results, hand_results)
@@ -133,7 +130,7 @@ def process_dataset():
                     sequences.append(np.array(window))
                     labels.append(label_map[action])
 
-                
+            print("FIM - ", video_name)
     X = np.array(sequences)
     y = to_categorical(labels).astype(int)
 
