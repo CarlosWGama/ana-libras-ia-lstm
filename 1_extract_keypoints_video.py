@@ -9,11 +9,11 @@ from tensorflow.keras.utils import to_categorical
 
 # --- CONFIGURAÇÕES ---
 DATA_PATH = "./dataset"
-SEQUENCE_LENGTH = 30
+SEQUENCE_LENGTH = 45
 OUTPUT_FOLDER = "./processed_data"
 
 # Caminhos dos modelos (Certifique-se que os arquivos .task estão na pasta)
-POSE_MODEL_PATH = 'pose_landmarker_full.task'
+POSE_MODEL_PATH = 'pose_landmarker_heavy.task'
 HAND_MODEL_PATH = 'hand_landmarker.task'
 
 # --- CONFIGURAÇÃO MEDIAPIPE TASKS ---

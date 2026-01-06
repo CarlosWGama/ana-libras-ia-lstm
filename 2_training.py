@@ -31,12 +31,18 @@ num_classes = y.shape[1]
 
 # 3. Arquitetura do Modelo
 model = Sequential()
-model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=input_shape))
-model.add(LSTM(128, return_sequences=True, activation='relu'))
-model.add(LSTM(64, return_sequences=False, activation='relu')) # Última LSTM precisa ser False
+model.add(LSTM(512, return_sequences=True, activation='relu', input_shape=input_shape))
+#model.add(Dropout(0.4))
 
-model.add(Dense(64, activation='relu'))
-model.add(Dense(32, activation='relu'))
+model.add(LSTM(1024, return_sequences=True, activation='relu'))
+#model.add(Dropout(0.4))
+
+model.add(LSTM(512, return_sequences=False, activation='relu')) # Última LSTM precisa ser False
+#model.add(Dropout(0.2))
+
+model.add(Dense(512, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
 model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
@@ -44,7 +50,7 @@ model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categ
 # 4. Callbacks (Essencial para um bom treino)
 callbacks = [
     # Para o treino se não melhorar a validação por 20 épocas (evita overfitting)
-    EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),
+    # EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),
     
     # Salva apenas o melhor modelo durante o processo
     ModelCheckpoint(filepath=MODEL_NAME, monitor='val_categorical_accuracy', save_best_only=True, mode='max'),
@@ -56,10 +62,12 @@ callbacks = [
 # 5. Treinamento
 print("\nIniciando treinamento...")
 history = model.fit(X_train, y_train, 
-                    epochs=200, 
+                    epochs=300, 
                     batch_size=32, 
                     validation_data=(X_test, y_test),
                     callbacks=callbacks)
+
+
 
 # 6. Visualização Rápida dos Resultados
 plt.figure(figsize=(10, 4))
@@ -75,5 +83,7 @@ plt.plot(history.history['val_categorical_accuracy'], label='Val Acc')
 plt.title('Accuracy')
 plt.legend()
 plt.show()
+
+print(np.sum(history.history['categorical_accuracy']))
 
 print(f"Modelo salvo como {MODEL_NAME}")
